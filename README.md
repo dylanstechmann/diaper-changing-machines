@@ -2,9 +2,11 @@
 
 10 automated, hands-free diaper-changing machine concepts modeled in Blender (via blender-mcp + Python scripting).
 
+This is a personal hobby and learning project, developed with assistance from AI tools. These are visual concept studies, not fabricated or tested machines.
+
 ## Designs
 
-| File | Name | Type | Cost | Key features |
+| File | Name | Type | Intended cost tier | Key features |
 |------|------|------|------|--------------|
 | M01_gantry.blend | Gantry Changer | Stationary | Mid-high | Overhead CNC gantry, gripper/wipe/spray/dryer tool head, supply cartridge, waste chute |
 | M02_changepod.blend | ChangePod | Portable | Mid | Clamshell, internal arm, jets, battery, carry handle |
@@ -23,4 +25,4 @@
 - `showroom.blend` - all 10 machines assembled as collection instances (2 rows of 5) with stage + lighting
 - `renders/` - EEVEE preview renders per machine + group shots
 
-All concepts use near-future-achievable mechanisms (gantry / robot-arm / mechanical assist), spanning budget to premium, portable to commercial throughput.
+The concepts explore gantry, robot-arm and mechanical-assist layouts, spanning intended budget to premium tiers and portable to commercial formats. Feasibility and cost have not been validated.
