@@ -6,6 +6,10 @@ refer to that checkout. In this migrated folder the viewer uses host port
 8766, and the nested workflow is not an active root workflow. The source
 remains independently runnable here with its own Compose image/project.
 
+After migration on 2026-10-09, the AI coding agent rebuilt the dedicated
+`diaper-m01-cad-study:dev` image and reran all nine digital tests successfully
+from this folder. The original Blender files and renders were unchanged.
+
 These checks are executed by an AI coding agent in the pinned Docker runtime.
 They are digital analyses, not tests personally performed or reviewed by the
 owner. No physical fabrication or machine operation has been performed.
