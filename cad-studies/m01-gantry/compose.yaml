@@ -1,0 +1,21 @@
+name: diaper-m01-cad-study
+services:
+  dev:
+    image: diaper-m01-cad-study:dev
+    build: .
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    environment:
+      MACHINE_CAD_ROOT: /workspace
+  viewer:
+    image: diaper-m01-cad-study:dev
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    environment:
+      MACHINE_CAD_ROOT: /workspace
+    command: [python, -m, machine_cad, serve, --host, 0.0.0.0, --port, '8765']
+    ports:
+      - 127.0.0.1:8766:8765
+    restart: unless-stopped

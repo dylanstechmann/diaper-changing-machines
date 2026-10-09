@@ -26,3 +26,11 @@ This is a personal hobby and learning project, developed with assistance from AI
 - `renders/` - EEVEE preview renders per machine + group shots
 
 The concepts explore gantry, robot-arm and mechanical-assist layouts, spanning intended budget to premium tiers and portable to commercial formats. Feasibility and cost have not been validated.
+
+## Parametric CAD study
+
+[cad-studies/m01-gantry](cad-studies/m01-gantry) preserves the AI-assisted
+CadQuery gantry study originally used to develop the machine-cad-agent tooling.
+It includes its source, pinned Docker runtime, geometric tests, and generated
+preview. Run its local CLI from that subfolder. The study checks 21 nominal
+solids and sampled carriage motion; it is not a complete changing machine.
