@@ -23,6 +23,20 @@ def measurements(parts: list[Component]) -> list[dict]:
              "solid_count": len(part.shape.Solids())} for part in parts]
 
 
+def swept_bounds(metrics: list[dict], travel_mm: float) -> dict:
+    """Axis-aligned bounds across the entire nominal linear carriage span."""
+    moving = [part["world_bounds_at_center"] for part in metrics if part["moving"]]
+    minimum = [min(part["min_mm"][axis] for part in moving) for axis in range(3)]
+    maximum = [max(part["max_mm"][axis] for part in moving) for axis in range(3)]
+    minimum[0] -= travel_mm / 2
+    maximum[0] += travel_mm / 2
+    return {
+        "min_mm": [round(value, 6) for value in minimum],
+        "max_mm": [round(value, 6) for value in maximum],
+        "size_mm": [round(high - low, 6) for low, high in zip(minimum, maximum)],
+    }
+
+
 def validate(parts: list[Component], p: Parameters) -> dict:
     metrics = measurements(parts)
     failures = []
@@ -32,13 +46,24 @@ def validate(parts: list[Component], p: Parameters) -> dict:
 
     # A sparse sample must never allow the carriage to jump over an end support
     # or leave a rail. This conservative X envelope is independent of sampling.
-    safe_travel = max(0, p.width_mm - p.frame_mm - p.support_width_mm
+    support_travel = (p.width_mm - p.frame_mm - p.support_width_mm
                       - p.carriage_width_mm - 2 * p.minimum_clearance_mm)
     rail_engagement_travel = p.width_mm - p.frame_mm - p.bearing_length_mm
-    if p.travel_mm > min(safe_travel, rail_engagement_travel) + 1e-6:
+    travel_limit = min(support_travel, rail_engagement_travel)
+    if p.travel_mm > travel_limit + 1e-6:
         failures.append({"check": "travel_envelope", "travel_mm": p.travel_mm,
-                         "maximum_mm": round(min(safe_travel, rail_engagement_travel), 6),
+                         "maximum_mm": round(travel_limit, 6),
                          "message": "Travel exceeds the conservative end-support / full rail-engagement envelope."})
+    envelope = {
+        "axis": "x",
+        "swept_bounds": swept_bounds(metrics, p.travel_mm),
+        "requested_travel_mm": p.travel_mm,
+        "travel_limits_mm": {
+            "end_supports": round(support_travel, 6),
+            "full_rail_engagement": round(rail_engagement_travel, 6),
+        },
+        "travel_reserve_per_end_mm": round((travel_limit - p.travel_mm) / 2, 6),
+    }
 
     moving = [part for part in parts if part.moving]
     obstacles = [part for part in parts if not part.moving and not part.name.startswith("rail_")]
@@ -79,7 +104,8 @@ def validate(parts: list[Component], p: Parameters) -> dict:
         samples.append(sample)
     return {"status": "pass" if not failures else "fail", "failures": failures,
             "parts": metrics, "motion_samples": samples,
-            "suggested_max_travel_mm": round(safe_travel, 6),
+            "motion_envelope": envelope,
+            "suggested_max_travel_mm": round(max(0, travel_limit), 6),
             "scope": "Solid validity, a conservative travel envelope, and clearances at the reported sample positions. Not strength, dynamics or safety validation.",
             "assumptions": ["Nominal stock profiles and rails; no vendor compatibility claim.",
                             "Support-to-frame and plate-to-block mating contacts are intentional.",
