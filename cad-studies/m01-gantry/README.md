@@ -31,6 +31,16 @@ Generated files remain under ignored `builds/`. Per-build overrides leave the
 canonical defaults unchanged. Reports preserve actual solid measurements,
 sampled motion checks and source/input provenance.
 
+For digital bench layout comparisons, the `motion_envelope` in a new check or
+build report gives the axis-aligned XYZ bounds that enclose the plate and both
+sliding blocks throughout nominal X travel. It also gives the two analytic
+travel limits and the signed X reserve per end (`travel_reserve_per_end_mm`).
+A negative reserve means the requested travel exceeds the stricter limit.
+A negative end-support limit means the centered carriage already falls
+short of the conservative clearance requirement.
+Use the motion samples to read computed clearances at specified positions.
+The bounds describe rigid nominal CAD geometry in millimeters.
+
 ## Optional MCP registration
 
 ```powershell
@@ -49,10 +59,10 @@ and gated export lists. The server needs no API key; the client supplies its
 LLM/VLM. Dependencies include CadQuery/Open CASCADE, the MCP Python SDK,
 CairoSVG and Google's model-viewer. Licenses are retained in this folder.
 
-The nine digital tests cover valid solids, plate dimensions/holes, rail gaps,
-travel bounds, real collisions, STEP roundtrip, invalid parameters, export
-gating and real MCP stdio. The nested workflow file is historical source,
-and does not run as a root workflow in this repository.
+The digital tests cover valid solids, plate dimensions/holes, rail gaps,
+the carriage sweep, travel bounds, solid intersections, STEP roundtrip,
+invalid parameters, export gating and real MCP stdio. The repository workflow runs these checks and the three-revision demo. It attaches the
+resulting reports and PNG views to each run. [M01 CAD checks](../../.github/workflows/m01-cad.yml)
 
 [Validation record](docs/VALIDATION.md) preserves evidence from the previous
 location. Those CI URLs and machine-specific hashes are historical. A passing

@@ -34,3 +34,4 @@ CadQuery gantry study originally used to develop the machine-cad-agent tooling.
 It includes its source, pinned Docker runtime, geometric tests, and generated
 preview. Run its local CLI from that subfolder. The study checks 21 nominal
 solids and sampled carriage motion; it is not a complete changing machine.
+Reports include the full nominal carriage envelope for comparing layouts digitally.

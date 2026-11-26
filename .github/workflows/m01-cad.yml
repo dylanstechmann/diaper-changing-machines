@@ -1,0 +1,41 @@
+name: M01 CAD checks
+on:
+  pull_request:
+    paths:
+      - 'cad-studies/m01-gantry/**'
+      - '.github/workflows/m01-cad.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'cad-studies/m01-gantry/**'
+      - '.github/workflows/m01-cad.yml'
+permissions:
+  contents: read
+
+jobs:
+  gantry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: cad-studies/m01-gantry
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build the pinned CAD runtime
+        run: docker compose build dev
+      - name: Run geometry, STEP roundtrip and MCP tests
+        run: docker compose run --rm -T dev python -m unittest discover -s tests -v
+      - name: Generate baseline, interference and repaired revisions
+        run: docker compose run --rm -T dev python -m machine_cad demo
+      - name: Save reports and renderings
+        uses: actions/upload-artifact@v7
+        with:
+          name: m01-reports-and-views
+          path: |
+            cad-studies/m01-gantry/builds/demo.json
+            cad-studies/m01-gantry/builds/*/report.json
+            cad-studies/m01-gantry/builds/*/views/*.png
+          if-no-files-found: error
+          retention-days: 7
