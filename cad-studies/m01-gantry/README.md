@@ -40,6 +40,9 @@ A negative end-support limit means the centered carriage already falls
 short of the conservative clearance requirement.
 Use the motion samples to read computed clearances at specified positions.
 The bounds describe rigid nominal CAD geometry in millimeters.
+The local viewer displays the XYZ bounds and signed reserve for the selected
+revision under **Nominal carriage sweep**. Rebuild older revisions to calculate
+values absent from their reports.
 
 ## Optional MCP registration
 
